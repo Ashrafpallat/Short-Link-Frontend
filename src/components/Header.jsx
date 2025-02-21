@@ -22,21 +22,25 @@ const Header = () => {
 
   return (
     <div className="bg-[#111827] text-white p-4 flex justify-between items-center">
-      <h1 className="text-xl font-bold">Short Link</h1>
+      <h1 className="text-xl font-bold flex items-center gap-2">
+        {/* <img src="/favicon.png" alt="Short Link Logo" className="w-6 h-6" /> */}
+        Short Link
+      </h1>
+
 
       {user ? (
         <div className="flex items-center gap-4">
           <p className="text-gray-300">Logged in as <span className="font-semibold">{user.name}</span></p>
-          <button 
-            onClick={handleLogout} 
+          <button
+            onClick={handleLogout}
             className="bg-red-600 px-4 py-2 rounded hover:bg-red-700 transition"
           >
             Logout
           </button>
         </div>
       ) : (
-        <button 
-          onClick={() => navigate("/login")} 
+        <button
+          onClick={() => navigate("/login")}
           className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 transition"
         >
           Login
