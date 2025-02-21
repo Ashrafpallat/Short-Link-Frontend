@@ -21,7 +21,7 @@ const Header = () => {
   };
 
   return (
-    <div className="bg-[#0A192F] text-white p-4 flex justify-between items-center">
+    <div className="bg-[#111827] text-white p-4 flex justify-between items-center">
       <h1 className="text-xl font-bold">Short Link</h1>
 
       {user ? (
