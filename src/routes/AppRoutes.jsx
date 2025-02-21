@@ -4,6 +4,7 @@ import Signup from "../pages/Signup";
 import Home from "../pages/Home";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
+import History from "../pages/History";
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<Home />} />
+        <Route path="/history" element={<History />} />
       </Route>
     </Routes>
   );
