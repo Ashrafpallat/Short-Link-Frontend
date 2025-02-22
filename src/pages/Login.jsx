@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginSuccess } from "../redux/userSlice";
+import Header from "../components/Header";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -31,6 +32,8 @@ const Login = () => {
   };
 
   return (
+    <div>
+      <Header/>
     <div className="min-h-screen flex items-center justify-center bg-[#0A192F]">
       <div className="bg-[#112240] p-8 rounded-lg shadow-lg w-96">
         <h2 className="text-white text-2xl font-semibold text-center mb-4">Login</h2>
@@ -74,6 +77,7 @@ const Login = () => {
           </span>
         </p>
       </div>
+    </div>
     </div>
   );
 };

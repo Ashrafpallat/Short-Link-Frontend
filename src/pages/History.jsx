@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Card, Table, Typography, Spin } from "antd";
-import api from '../services/axiosInstance'
+import {
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, CircularProgress,
+    TablePagination, TableSortLabel, TextField,
+    Box
+} from "@mui/material";
+import api from '../services/axiosInstance';
 import Header from "../components/Header";
-const { Title, Text } = Typography;
+import CustomPagination from "../components/CustomPagination";
 
 const History = () => {
     const [urls, setUrls] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [order, setOrder] = useState("asc");
+    const [orderBy, setOrderBy] = useState("createdAt");
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         const fetchHistory = async () => {
@@ -22,61 +31,184 @@ const History = () => {
         fetchHistory();
     }, []);
 
-    const columns = [
-        {
-            title: "Date",
-            dataIndex: "createdAt",
-            key: "createdAt",
-            render: (date) => new Date(date).toLocaleDateString(),
-        },
-        {
-            title: "Original URL",
-            dataIndex: "originalUrl",
-            key: "originalUrl",
-            render: (url) => (
-                <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-                    {url}
-                </a>
-            ),
-        },
-        {
-            title: "Short URL",
-            dataIndex: "shortUrl",
-            key: "shortUrl",
-            render: (shortUrl) => (
-                <a href={`http://localhost:5000/${shortUrl}`} target="_blank" rel="noopener noreferrer" className="text-green-500 underline">
-                    {`http://localhost:5000/${shortUrl}`}
-                </a>
-            ),
-        },
-        {
-            title: "Clicks",
-            dataIndex: "clicks",
-            key: "clicks",
-            align: "center",
-        },
-    ];
+    // Sorting function
+    const handleSort = (property) => {
+        const isAscending = orderBy === property && order === "asc";
+        setOrder(isAscending ? "desc" : "asc");
+        setOrderBy(property);
+    };
+
+    // Sorting logic
+    const sortedData = [...urls].sort((a, b) => {
+        if (order === "asc") {
+            return a[orderBy] > b[orderBy] ? 1 : -1;
+        } else {
+            return a[orderBy] < b[orderBy] ? 1 : -1;
+        }
+    });
+
+    // Search filter logic
+    const filteredData = sortedData.filter((url) =>
+        url.originalUrl.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        url.shortUrl.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Handle pagination
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
     return (
         <div>
             <Header />
-            <div className="p-6 bg-[#1F2937] h-screen">
-                <Card className="shadow-md">
-                    <Title level={3} className="text-center font-bold">
+            <div style={{ backgroundColor: "#1F2937", minHeight: "100vh", padding: "20px" }}>
+                <Paper sx={{ backgroundColor: "#2D3748", padding: 2, color: "white" }}>
+                    <Typography variant="h5" align="center" gutterBottom>
                         URL Shortening History
-                    </Title>
+                    </Typography>
+
+                    {/* Search Box */}
+                    <TextField
+                        label="Search URL"
+                        variant="outlined"
+                        fullWidth
+                        sx={{
+                            backgroundColor: "", // Slightly transparent background
+                            marginBottom: "10px",
+                            borderRadius: "5px",
+                            "& .MuiOutlinedInput-root": {
+                                "& fieldset": { borderColor: "#1F2937" }, // Border color white
+                                "&:hover fieldset": { borderColor: "#1F2937" }, // Border color on hover
+                                "&.Mui-focused fieldset": { borderColor: "#1F2937" }, // Border color on focus
+                            },
+                            "& .MuiInputLabel-root": { color: "white" }, // Label color
+                            "& .MuiInputLabel-root.Mui-focused": { color: "#90caf9" }, // Label color on focus
+                            "& input": { color: "white" }, // Text color
+                            "& input::placeholder": { color: "rgba(255, 255, 255, 0.7)" }, // Placeholder color
+                        }}
+                        InputProps={{
+                            style: { color: "white" },
+                        }}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+
+
                     {loading ? (
-                        <div className="flex justify-center items-center py-4">
-                            <Spin size="large" />
+                        <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
+                            <CircularProgress />
                         </div>
-                    ) : urls.length === 0 ? (
-                        <Text type="secondary" className="block text-center">
+                    ) : filteredData.length === 0 ? (
+                        <Typography align="center" color="gray">
                             No URL history found.
-                        </Text>
+                        </Typography>
                     ) : (
-                        <Table dataSource={urls} columns={columns} rowKey="_id" pagination={{ pageSize: 5 }} />
+                        <>
+                            <TableContainer component={Paper} sx={{ backgroundColor: "#374151" }}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{
+                                                color: "white",
+                                                "& .MuiTableSortLabel-root": { color: "white" },  // Default sort label color
+                                                "& .MuiTableSortLabel-root.Mui-active": { color: "white" }, // Active state color
+                                                "& .MuiTableSortLabel-icon": { color: "white" }  // Sort arrow color
+                                            }}>
+                                                <TableSortLabel
+                                                    active={orderBy === "createdAt"}
+                                                    direction={orderBy === "createdAt" ? order : "asc"}
+                                                    onClick={() => handleSort("createdAt")}
+                                                >
+                                                    Date
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell sx={{
+                                                color: "white",
+                                                "& .MuiTableSortLabel-root": { color: "white" },  // Default sort label color
+                                                "& .MuiTableSortLabel-root.Mui-active": { color: "white" }, // Active state color
+                                                "& .MuiTableSortLabel-icon": { color: "white" }  // Sort arrow color
+                                            }}>                                                <TableSortLabel
+                                                active={orderBy === "originalUrl"}
+                                                direction={orderBy === "originalUrl" ? order : "asc"}
+                                                onClick={() => handleSort("originalUrl")}
+                                            >
+                                                    Original URL
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell sx={{
+                                                color: "white",
+                                                "& .MuiTableSortLabel-root": { color: "white" },  // Default sort label color
+                                                "& .MuiTableSortLabel-root.Mui-active": { color: "white" }, // Active state color
+                                                "& .MuiTableSortLabel-icon": { color: "white" }  // Sort arrow color
+                                            }}>                                                <TableSortLabel
+                                                active={orderBy === "shortUrl"}
+                                                direction={orderBy === "shortUrl" ? order : "asc"}
+                                                onClick={() => handleSort("shortUrl")}
+                                            >
+                                                    Short URL
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell sx={{
+                                                color: "white",
+                                                "& .MuiTableSortLabel-root": { color: "white" },  // Default sort label color
+                                                "& .MuiTableSortLabel-root.Mui-active": { color: "white" }, // Active state color
+                                                "& .MuiTableSortLabel-icon": { color: "white" }  // Sort arrow color
+                                            }}>                                                <TableSortLabel
+                                                active={orderBy === "clicks"}
+                                                direction={orderBy === "clicks" ? order : "asc"}
+                                                onClick={() => handleSort("clicks")}
+                                            >
+                                                    Clicks
+                                                </TableSortLabel>
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((url) => (
+                                            <TableRow key={url._id}>
+                                                <TableCell sx={{ color: "white" }}>
+                                                    {new Date(url.createdAt).toLocaleDateString()}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <a href={url.originalUrl} target="_blank" rel="noopener noreferrer" style={{ color: "#90caf9", textDecoration: "underline" }}>
+                                                        {url.originalUrl}
+                                                    </a>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <a href={`http://localhost:5000/${url.shortUrl}`} target="_blank" rel="noopener noreferrer" style={{ color: "#66bb6a", textDecoration: "underline" }}>
+                                                        {`http://localhost:5000/${url.shortUrl}`}
+                                                    </a>
+                                                </TableCell>
+                                                <TableCell sx={{ color: "white", textAlign: "center" }}>{url.clicks}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+
+                            {/* Pagination */}
+                            <Box sx={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "10px" }}>
+                                <TablePagination
+                                    component="div"
+                                    count={filteredData.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                    ActionsComponent={CustomPagination}  // Use custom pagination
+                                    sx={{ color: "white", display: "flex", justifyContent: "center" }} // Center pagination
+                                    rowsPerPageOptions={[]} // Hides "Rows per page"
+                                    labelDisplayedRows={() => ""} // Hides "1-2 of 2" text
+                                />
+
+                            </Box>
+                        </>
                     )}
-                </Card>
+                </Paper>
             </div>
         </div>
     );
