@@ -7,6 +7,8 @@ import {
 import api from '../services/axiosInstance';
 import Header from "../components/Header";
 import CustomPagination from "../components/CustomPagination";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import toast from "react-hot-toast";
 
 const History = () => {
     const [urls, setUrls] = useState([]);
@@ -62,7 +64,10 @@ const History = () => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
+    const handleCopy = (text) => {
+        navigator.clipboard.writeText(text);
+        toast.success("Copied to clipboard!"); // You can replace this with a toast notification
+      };
     return (
         <div>
             <Header />
@@ -182,6 +187,12 @@ const History = () => {
                                                     <a href={`http://localhost:5000/${url.shortUrl}`} target="_blank" rel="noopener noreferrer" style={{ color: "#66bb6a", textDecoration: "underline" }}>
                                                         {`http://localhost:5000/${url.shortUrl}`}
                                                     </a>
+
+                                                    <ContentCopyIcon
+                                                        fontSize="small"
+                                                        className="text-white ml-2 cursor-pointer hover:text-gray-300 transition-colors"
+                                                        onClick={() => handleCopy(`http://localhost:5000/${url.shortUrl}`)}
+                                                    />
                                                 </TableCell>
                                                 <TableCell sx={{ color: "white", textAlign: "center" }}>{url.clicks}</TableCell>
                                             </TableRow>

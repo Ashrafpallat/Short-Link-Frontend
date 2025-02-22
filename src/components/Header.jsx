@@ -19,10 +19,15 @@ const Header = () => {
       console.error("Logout failed:", error);
     }
   };
-
+  const getGreeting = () => {
+    const hours = new Date().getHours();
+    if (hours < 12) return "Good morning 🌅☀️🌞";
+    if (hours < 18) return "Good afternoon 🌤️☀️😃";
+    return "Good evening 🌆🌙✨";
+  };
   return (
-    <div className="bg-[#111827] text-white p-4 flex justify-between items-center">
-      <h1 className="text-xl font-bold flex items-center gap-2">
+    <div className="bg-[#111827] text-white p-5 flex justify-between items-center">
+      <h1 className="text-2xl font-bold flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
         {/* <img src="/favicon.png" alt="Short Link Logo" className="w-6 h-6" /> */}
         Short Link
       </h1>
@@ -30,10 +35,10 @@ const Header = () => {
 
       {user ? (
         <div className="flex items-center gap-4">
-          <p className="text-gray-300">Logged in as <span className="font-semibold">{user.name}</span></p>
+          <p className="text-gray-400">{getGreeting()} <span className="font-semibold">{user.name}</span></p>
           <button
             onClick={handleLogout}
-            className="bg-red-600 px-4 py-2 rounded hover:bg-red-700 transition"
+            className="border px-4 py-2 rounded hover:bg-[#303643] transition"
           >
             Logout
           </button>
