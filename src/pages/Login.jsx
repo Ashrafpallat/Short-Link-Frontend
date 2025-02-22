@@ -27,57 +27,67 @@ const Login = () => {
       toast.success("Login successful!"); // You can replace this with a toast notification
       navigate("/"); // Redirect to dashboard after login
     } catch (err) {
-      setError(err.message);
+      setError(err.response.data.message);      
     }
   };
 
   return (
     <div>
-      <Header/>
-    <div className="min-h-screen flex items-center justify-center bg-[#0A192F]">
-      <div className="bg-[#112240] p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-white text-2xl font-semibold text-center mb-4">Login</h2>
+      <Header />
+      <div className="min-h-screen flex items-center justify-center bg-[#0A192F]">
+        <div className="bg-[#112240] p-10 rounded-lg shadow-lg w-[450px]"> {/* Increased width */}
+          <h2 className="text-white text-3xl font-semibold text-center mb-6">Welcome Back</h2>
 
-        {error && <p className="text-red-500 text-center">{error}</p>}
+          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full p-2 rounded bg-[#0A192F] text-white border border-gray-600 focus:outline-none"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <form onSubmit={handleLogin} className="space-y-5">
+            {/* Email Field */}
+            <div>
+              <label className="text-gray-300 block mb-1">Email</label>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="w-full p-3 rounded bg-[#0A192F] text-white border border-gray-600 focus:outline-none"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full p-2 rounded bg-[#0A192F] text-white border border-gray-600 focus:outline-none"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+            {/* Password Field */}
+            <div>
+              <label className="text-gray-300 block mb-1">Password</label>
+              <input
+                type="password"
+                placeholder="Enter your password"
+                className="w-full p-3 rounded bg-[#0A192F] text-white border border-gray-600 focus:outline-none"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
 
-          <button
-            type="submit"
-            className="w-full p-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
-          >
-            Login
-          </button>
-        </form>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full p-3 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
+            >
+              Login
+            </button>
+          </form>
 
-        <p className="text-gray-300 text-center mt-4">
-          Don't have an account?{" "}
-          <span
-            className="text-blue-400 cursor-pointer hover:underline"
-            onClick={() => navigate("/signup")}
-          >
-            Sign Up
-          </span>
-        </p>
+          <p className="text-gray-300 text-center mt-5">
+            Don't have an account?{" "}
+            <span
+              className="text-blue-400 cursor-pointer hover:underline"
+              onClick={() => navigate("/signup")}
+            >
+              Sign Up
+            </span>
+          </p>
+        </div>
       </div>
-    </div>
+
     </div>
   );
 };

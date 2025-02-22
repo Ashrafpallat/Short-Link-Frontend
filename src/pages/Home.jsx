@@ -45,6 +45,15 @@ const Home = () => {
         setError("Please enter a valid URL");
         return;
       }
+      
+      // Regular expression to validate URLs
+      const urlPattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(\/[\w-./?%&=]*)?$/i;
+      
+      if (!urlPattern.test(originalUrl.trim())) {
+        setError("Please enter a valid URL starting with http:// or https://");
+        return;
+      }
+      
 
       const response = await api.post("/url/shorten", { originalUrl });
 
@@ -57,7 +66,7 @@ const Home = () => {
   return (
     <div>
       <Header />
-      <div className="min-h-screen flex flex-col items-center bg-[#1F2937] text-white p-6">
+      <div className="min-h-screen flex flex-col items-center bg-[#1F2937] text-white p-6 pt-26">
 
         {/* Heading */}
         <div className="max-w-xl mx-auto text-center">

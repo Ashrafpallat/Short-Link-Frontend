@@ -71,7 +71,7 @@ const History = () => {
     return (
         <div>
             <Header />
-            <div style={{ backgroundColor: "#1F2937", minHeight: "100vh", padding: "20px" }}>
+            <div style={{ backgroundColor: "#1F2937", minHeight: "100vh", padding: "20px", paddingTop:'90px' }}>
                 <Paper sx={{ backgroundColor: "#2D3748", padding: 2, color: "white" }}>
                     <Typography variant="h5" align="center" gutterBottom>
                         URL Shortening History
