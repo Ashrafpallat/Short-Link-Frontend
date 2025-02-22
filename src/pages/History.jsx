@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { urlHistory } from "../services/urlServices";
 
 const History = () => {
-  const BACKEND_URL=import.meta.env.VITE_BACKEND_URL
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
     const [urls, setUrls] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0);
@@ -34,14 +34,14 @@ const History = () => {
         fetchHistory();
     }, []);
 
-    
+
     const handleSort = (property) => {
         const isAscending = orderBy === property && order === "asc";
         setOrder(isAscending ? "desc" : "asc");
         setOrderBy(property);
     };
 
-    
+
     const sortedData = [...urls].sort((a, b) => {
         if (order === "asc") {
             return a[orderBy] > b[orderBy] ? 1 : -1;
@@ -50,13 +50,13 @@ const History = () => {
         }
     });
 
-    
+
     const filteredData = sortedData.filter((url) =>
         url.originalUrl.toLowerCase().includes(searchTerm.toLowerCase()) ||
         url.shortUrl.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -67,12 +67,12 @@ const History = () => {
     };
     const handleCopy = (text) => {
         navigator.clipboard.writeText(text);
-        toast.success("Copied to clipboard!"); 
-      };
+        toast.success("Copied to clipboard!");
+    };
     return (
         <div>
             <Header />
-            <div style={{ backgroundColor: "#1F2937", minHeight: "100vh", padding: "20px", paddingTop:'90px' }}>
+            <div style={{ backgroundColor: "#1F2937", minHeight: "100vh", padding: "20px", paddingTop: '90px' }}>
                 <Paper sx={{ backgroundColor: "#2D3748", padding: 2, color: "white" }}>
                     <Typography variant="h5" align="center" gutterBottom>
                         URL Shortening History
@@ -84,7 +84,7 @@ const History = () => {
                         variant="outlined"
                         fullWidth
                         sx={{
-                            backgroundColor: "", 
+                            backgroundColor: "",
                             marginBottom: "10px",
                             borderRadius: "5px",
                             "& .MuiOutlinedInput-root": {
@@ -122,7 +122,8 @@ const History = () => {
                                                 color: "white",
                                                 "& .MuiTableSortLabel-root": { color: "white" },  // Default sort label color
                                                 "& .MuiTableSortLabel-root.Mui-active": { color: "white" }, // Active state color
-                                                "& .MuiTableSortLabel-icon": { color: "white" }  // Sort arrow color
+                                                "& .MuiTableSortLabel-icon": { color: "white" },  // Sort arrow color
+                                                textAlign: 'center'
                                             }}>
                                                 <TableSortLabel
                                                     active={orderBy === "createdAt"}
@@ -136,12 +137,14 @@ const History = () => {
                                                 color: "white",
                                                 "& .MuiTableSortLabel-root": { color: "white" },  // Default sort label color
                                                 "& .MuiTableSortLabel-root.Mui-active": { color: "white" }, // Active state color
-                                                "& .MuiTableSortLabel-icon": { color: "white" }  // Sort arrow color
-                                            }}>                                                <TableSortLabel
-                                                active={orderBy === "originalUrl"}
-                                                direction={orderBy === "originalUrl" ? order : "asc"}
-                                                onClick={() => handleSort("originalUrl")}
-                                            >
+                                                "& .MuiTableSortLabel-icon": { color: "white" },  // Sort arrow color
+                                                textAlign: 'center'
+                                            }}>
+                                                <TableSortLabel
+                                                    active={orderBy === "originalUrl"}
+                                                    direction={orderBy === "originalUrl" ? order : "asc"}
+                                                    onClick={() => handleSort("originalUrl")}
+                                                >
                                                     Original URL
                                                 </TableSortLabel>
                                             </TableCell>
@@ -149,12 +152,14 @@ const History = () => {
                                                 color: "white",
                                                 "& .MuiTableSortLabel-root": { color: "white" },  // Default sort label color
                                                 "& .MuiTableSortLabel-root.Mui-active": { color: "white" }, // Active state color
-                                                "& .MuiTableSortLabel-icon": { color: "white" }  // Sort arrow color
-                                            }}>                                                <TableSortLabel
-                                                active={orderBy === "shortUrl"}
-                                                direction={orderBy === "shortUrl" ? order : "asc"}
-                                                onClick={() => handleSort("shortUrl")}
-                                            >
+                                                "& .MuiTableSortLabel-icon": { color: "white" },  // Sort arrow color
+                                                textAlign: 'center'
+                                            }}>
+                                                <TableSortLabel
+                                                    active={orderBy === "shortUrl"}
+                                                    direction={orderBy === "shortUrl" ? order : "asc"}
+                                                    onClick={() => handleSort("shortUrl")}
+                                                >
                                                     Short URL
                                                 </TableSortLabel>
                                             </TableCell>
@@ -162,12 +167,14 @@ const History = () => {
                                                 color: "white",
                                                 "& .MuiTableSortLabel-root": { color: "white" },  // Default sort label color
                                                 "& .MuiTableSortLabel-root.Mui-active": { color: "white" }, // Active state color
-                                                "& .MuiTableSortLabel-icon": { color: "white" }  // Sort arrow color
-                                            }}>                                                <TableSortLabel
-                                                active={orderBy === "clicks"}
-                                                direction={orderBy === "clicks" ? order : "asc"}
-                                                onClick={() => handleSort("clicks")}
-                                            >
+                                                "& .MuiTableSortLabel-icon": { color: "white" },  // Sort arrow color
+                                                textAlign: 'center'
+                                            }}>
+                                                <TableSortLabel
+                                                    active={orderBy === "clicks"}
+                                                    direction={orderBy === "clicks" ? order : "asc"}
+                                                    onClick={() => handleSort("clicks")}
+                                                >
                                                     Clicks
                                                 </TableSortLabel>
                                             </TableCell>
@@ -179,12 +186,25 @@ const History = () => {
                                                 <TableCell sx={{ color: "white" }}>
                                                     {new Date(url.createdAt).toLocaleDateString()}
                                                 </TableCell>
-                                                <TableCell>
-                                                    <a href={url.originalUrl} target="_blank" rel="noopener noreferrer" style={{ color: "#90caf9", textDecoration: "underline" }}>
+                                                <TableCell
+                                                    sx={{
+                                                        color: "white",
+                                                        maxWidth: "250px", // Set a fixed width
+                                                        overflow: "hidden",
+                                                        textOverflow: "ellipsis",
+                                                        whiteSpace: "nowrap",
+                                                    }}
+                                                >
+                                                    <a
+                                                        href={url.originalUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        style={{ color: "#90caf9", textDecoration: "underline" }}
+                                                    >
                                                         {url.originalUrl}
                                                     </a>
                                                 </TableCell>
-                                                <TableCell>
+                                                <TableCell sx={{ textAlign: 'center' }}>
                                                     <a href={`${BACKEND_URL}/${url.shortUrl}`} target="_blank" rel="noopener noreferrer" style={{ color: "#66bb6a", textDecoration: "underline" }}>
                                                         {`${BACKEND_URL}/${url.shortUrl}`}
                                                     </a>
@@ -211,10 +231,10 @@ const History = () => {
                                     page={page}
                                     onPageChange={handleChangePage}
                                     onRowsPerPageChange={handleChangeRowsPerPage}
-                                    ActionsComponent={CustomPagination}  
-                                    sx={{ color: "white", display: "flex", justifyContent: "center" }} 
-                                    rowsPerPageOptions={[]} 
-                                    labelDisplayedRows={() => ""} 
+                                    ActionsComponent={CustomPagination}
+                                    sx={{ color: "white", display: "flex", justifyContent: "center" }}
+                                    rowsPerPageOptions={[]}
+                                    labelDisplayedRows={() => ""}
                                 />
                             </Box>
                         </>
