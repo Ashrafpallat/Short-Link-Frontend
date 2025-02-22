@@ -7,9 +7,9 @@ const App = () => {
   return (
     <>
     <Toaster
-        position="top-center" // Adjust position
+        position="top-center" 
         toastOptions={{
-          duration: 5000, // Auto close after 5 seconds
+          duration: 5000, 
         }}
       />
      <Router>

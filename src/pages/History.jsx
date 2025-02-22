@@ -4,13 +4,14 @@ import {
     TablePagination, TableSortLabel, TextField,
     Box
 } from "@mui/material";
-import api from '../services/axiosInstance';
 import Header from "../components/Header";
 import CustomPagination from "../components/CustomPagination";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import toast from "react-hot-toast";
+import { urlHistory } from "../services/urlServices";
 
 const History = () => {
+  const BACKEND_URL=import.meta.env.VITE_BACKEND_URL
     const [urls, setUrls] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0);
@@ -22,7 +23,7 @@ const History = () => {
     useEffect(() => {
         const fetchHistory = async () => {
             try {
-                const response = await api.get("/url/history");
+                const response = await urlHistory()
                 setUrls(response.data.urls);
             } catch (error) {
                 console.error("Error fetching history:", error);
@@ -33,14 +34,14 @@ const History = () => {
         fetchHistory();
     }, []);
 
-    // Sorting function
+    
     const handleSort = (property) => {
         const isAscending = orderBy === property && order === "asc";
         setOrder(isAscending ? "desc" : "asc");
         setOrderBy(property);
     };
 
-    // Sorting logic
+    
     const sortedData = [...urls].sort((a, b) => {
         if (order === "asc") {
             return a[orderBy] > b[orderBy] ? 1 : -1;
@@ -49,13 +50,13 @@ const History = () => {
         }
     });
 
-    // Search filter logic
+    
     const filteredData = sortedData.filter((url) =>
         url.originalUrl.toLowerCase().includes(searchTerm.toLowerCase()) ||
         url.shortUrl.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Handle pagination
+    
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -66,7 +67,7 @@ const History = () => {
     };
     const handleCopy = (text) => {
         navigator.clipboard.writeText(text);
-        toast.success("Copied to clipboard!"); // You can replace this with a toast notification
+        toast.success("Copied to clipboard!"); 
       };
     return (
         <div>
@@ -83,11 +84,11 @@ const History = () => {
                         variant="outlined"
                         fullWidth
                         sx={{
-                            backgroundColor: "", // Slightly transparent background
+                            backgroundColor: "", 
                             marginBottom: "10px",
                             borderRadius: "5px",
                             "& .MuiOutlinedInput-root": {
-                                "& fieldset": { borderColor: "#1F2937" }, // Border color white
+                                "& fieldset": { borderColor: "#1F2937" }, // Border color 
                                 "&:hover fieldset": { borderColor: "#1F2937" }, // Border color on hover
                                 "&.Mui-focused fieldset": { borderColor: "#1F2937" }, // Border color on focus
                             },
@@ -184,14 +185,14 @@ const History = () => {
                                                     </a>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <a href={`http://localhost:5000/${url.shortUrl}`} target="_blank" rel="noopener noreferrer" style={{ color: "#66bb6a", textDecoration: "underline" }}>
-                                                        {`http://localhost:5000/${url.shortUrl}`}
+                                                    <a href={`${BACKEND_URL}/${url.shortUrl}`} target="_blank" rel="noopener noreferrer" style={{ color: "#66bb6a", textDecoration: "underline" }}>
+                                                        {`${BACKEND_URL}/${url.shortUrl}`}
                                                     </a>
 
                                                     <ContentCopyIcon
                                                         fontSize="small"
                                                         className="text-white ml-2 cursor-pointer hover:text-gray-300 transition-colors"
-                                                        onClick={() => handleCopy(`http://localhost:5000/${url.shortUrl}`)}
+                                                        onClick={() => handleCopy(`${BACKEND_URL}/${url.shortUrl}`)}
                                                     />
                                                 </TableCell>
                                                 <TableCell sx={{ color: "white", textAlign: "center" }}>{url.clicks}</TableCell>
@@ -210,12 +211,11 @@ const History = () => {
                                     page={page}
                                     onPageChange={handleChangePage}
                                     onRowsPerPageChange={handleChangeRowsPerPage}
-                                    ActionsComponent={CustomPagination}  // Use custom pagination
-                                    sx={{ color: "white", display: "flex", justifyContent: "center" }} // Center pagination
-                                    rowsPerPageOptions={[]} // Hides "Rows per page"
-                                    labelDisplayedRows={() => ""} // Hides "1-2 of 2" text
+                                    ActionsComponent={CustomPagination}  
+                                    sx={{ color: "white", display: "flex", justifyContent: "center" }} 
+                                    rowsPerPageOptions={[]} 
+                                    labelDisplayedRows={() => ""} 
                                 />
-
                             </Box>
                         </>
                     )}

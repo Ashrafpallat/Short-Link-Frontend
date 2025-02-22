@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import toast from "react-hot-toast";
 import Header from "../components/Header";
+import { userSignup } from "../services/authServices";
 
 const Signup = () => {
     const [name, setName] = useState("");
@@ -14,16 +14,10 @@ const Signup = () => {
     const handleSignup = async (e) => {
         e.preventDefault();
         setError(null);
-
         try {
-            const { data } = await axios.post(
-                "http://localhost:5000/api/auth/signup",
-                { name, email, password },
-                { withCredentials: true } // Required to send cookies
-            );
-
+            await userSignup(name, email, password)
             toast.success("Signup successful! Please log in.");
-            navigate("/login"); // Redirect to login after signup
+            navigate("/login"); 
         } catch (err) {
             setError(err.response.data.message);
         }
@@ -33,7 +27,7 @@ const Signup = () => {
         <div>
             <Header />
             <div className="min-h-screen flex items-center justify-center bg-[#0A192F]">
-                <div className="bg-[#112240] p-10 rounded-lg shadow-lg w-[450px]"> {/* Increased width */}
+                <div className="bg-[#112240] p-10 rounded-lg shadow-lg w-[450px]"> 
                     <h2 className="text-white text-3xl font-semibold text-center mb-6">Create Your Account</h2>
 
                     {error && <p className="text-red-500 text-center mb-4">{error}</p>}

@@ -1,10 +1,10 @@
-import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginSuccess } from "../redux/userSlice";
 import Header from "../components/Header";
+import { userLogin } from "../services/authServices";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -18,14 +18,10 @@ const Login = () => {
     setError(null);
 
     try {
-      const { data } = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        { email, password },
-        { withCredentials: true } // Required to send cookies
-      );
-      dispatch(loginSuccess({ name: data.user.name, email: data.user.email })); // Save user in Redux
-      toast.success("Login successful!"); // You can replace this with a toast notification
-      navigate("/"); // Redirect to dashboard after login
+      const data = await userLogin(email, password)
+      dispatch(loginSuccess({ name: data.user.name, email: data.user.email })); 
+      toast.success("Login successful!"); 
+      navigate("/"); 
     } catch (err) {
       setError(err.response.data.message);      
     }
@@ -35,7 +31,7 @@ const Login = () => {
     <div>
       <Header />
       <div className="min-h-screen flex items-center justify-center bg-[#0A192F]">
-        <div className="bg-[#112240] p-10 rounded-lg shadow-lg w-[450px]"> {/* Increased width */}
+        <div className="bg-[#112240] p-10 rounded-lg shadow-lg w-[450px]"> 
           <h2 className="text-white text-3xl font-semibold text-center mb-6">Welcome Back</h2>
 
           {error && <p className="text-red-500 text-center mb-4">{error}</p>}

@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { logout } from "../redux/userSlice"; // Import logout action
+import { logout } from "../redux/userSlice"; 
+import { userLogout } from "../services/authServices";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -11,10 +11,9 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true });
-
-      dispatch(logout()); // Clear Redux state
-      navigate("/login"); // Redirect to login page
+      userLogout()
+      dispatch(logout()); 
+      navigate("/login"); 
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -23,7 +22,7 @@ const Header = () => {
     const hours = new Date().getHours();
     if (hours < 12) return "Good morning 🌅☀️";
     if (hours < 18) return "Good afternoon 🌤️☀️";
-    return "Good evening 🌆🌙✨";
+    return "Good evening 🌆🌙";
   };
   return (
     <div className="bg-[#111827] text-white p-5 flex justify-between items-center fixed w-full">
