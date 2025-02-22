@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { loginSuccess } from "../redux/userSlice";
 import Header from "../components/Header";
 import { userLogin } from "../services/authServices";
+import { Button, CircularProgress } from "@mui/material";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -18,12 +20,16 @@ const Login = () => {
     setError(null);
 
     try {
+      setLoading(true)
       const data = await userLogin(email, password)
-      dispatch(loginSuccess({ name: data.user.name, email: data.user.email })); 
-      toast.success("Login successful!"); 
-      navigate("/"); 
+      dispatch(loginSuccess({ name: data.user.name, email: data.user.email }));
+      toast.success("Login successful!");
+      navigate("/");
+      setLoading(false)
     } catch (err) {
-      setError(err.response.data.message);      
+      setError(err.response.data.message);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -31,7 +37,7 @@ const Login = () => {
     <div>
       <Header />
       <div className="min-h-screen flex items-center justify-center bg-[#0A192F]">
-        <div className="bg-[#112240] p-10 rounded-lg shadow-lg w-[450px]"> 
+        <div className="bg-[#112240] p-10 rounded-lg shadow-lg w-[450px]">
           <h2 className="text-white text-3xl font-semibold text-center mb-6">Welcome Back</h2>
 
           {error && <p className="text-red-500 text-center mb-4">{error}</p>}
@@ -64,12 +70,16 @@ const Login = () => {
             </div>
 
             {/* Submit Button */}
-            <button
+            <Button
               type="submit"
-              className="w-full p-3 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={loading} 
+              sx={{ padding: "12px", textTransform: "none" }} 
             >
-              Login
-            </button>
+              {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Login"}
+            </Button>
           </form>
 
           <p className="text-gray-300 text-center mt-5">

@@ -3,23 +3,29 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Header from "../components/Header";
 import { userSignup } from "../services/authServices";
+import { Button, CircularProgress } from "@mui/material";
 
 const Signup = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
 
     const handleSignup = async (e) => {
         e.preventDefault();
         setError(null);
         try {
+            setLoading(true)
             await userSignup(name, email, password)
             toast.success("Signup successful! Please log in.");
-            navigate("/login"); 
+            navigate("/login");
+            setLoading(false)
         } catch (err) {
             setError(err.response.data.message);
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -27,7 +33,7 @@ const Signup = () => {
         <div>
             <Header />
             <div className="min-h-screen flex items-center justify-center bg-[#0A192F]">
-                <div className="bg-[#112240] p-10 rounded-lg shadow-lg w-[450px]"> 
+                <div className="bg-[#112240] p-10 rounded-lg shadow-lg w-[450px]">
                     <h2 className="text-white text-3xl font-semibold text-center mb-6">Create Your Account</h2>
 
                     {error && <p className="text-red-500 text-center mb-4">{error}</p>}
@@ -73,12 +79,16 @@ const Signup = () => {
                         </div>
 
                         {/* Submit Button */}
-                        <button
+                        <Button
                             type="submit"
-                            className="w-full p-3 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            disabled={loading}
+                            sx={{ padding: "12px", textTransform: "none", mt: 2 }}
                         >
-                            Sign Up
-                        </button>
+                            {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Sign Up"}
+                        </Button>
                     </form>
 
                     <p className="text-gray-300 text-center mt-5">

@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { shortenUrl } from "../services/urlServices";
+import { Button, CircularProgress } from "@mui/material";
 
 const Home = () => {
   const [originalUrl, setOriginalUrl] = useState("");
@@ -14,13 +15,13 @@ const Home = () => {
   const { user } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
-
+  const [loading, setLoading] = useState(false)
   const [faqs, setFaqs] = useState([
     { question: "Why I need to create an account?", answer: "By creating a account in Short Link you can get your URLs history.", open: false },
     { question: "What are the analytics I can see in the URL history?", answer: "You can see your URLs created date, original URL, Short URL and Click counts!.", open: false },
     { question: "Is it free to use?", answer: "Yes, Short Link is completely free.", open: false },
   ]);
-  const BACKEND_URL=import.meta.env.VITE_BACKEND_URL
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const handleCopy = () => {
     navigator.clipboard.writeText(`${BACKEND_URL}/${shortUrl}`);
     toast.success("Copied to clipboard!");
@@ -31,6 +32,7 @@ const Home = () => {
   };
   const handleShortenUrl = async () => {
     try {
+      setLoading(true)
       if (!user) {
         navigate('/login')
       }
@@ -46,8 +48,11 @@ const Home = () => {
       }
       const response = await shortenUrl(originalUrl)
       setShortUrl(response.data.shortUrl);
+      setLoading(false)
     } catch (err) {
       setError(err.response?.data?.message || "Failed to shorten URL");
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -74,12 +79,16 @@ const Home = () => {
             value={originalUrl}
             onChange={(e) => setOriginalUrl(e.target.value)}
           />
-          <button
+          <Button
             onClick={handleShortenUrl}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full mt-4"
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={loading} 
+            sx={{ padding: "10px", textTransform: "none", mt: 2 }} 
           >
-            Shorten URL
-          </button>
+            {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Shorten URL"}
+          </Button>
 
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
