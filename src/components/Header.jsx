@@ -37,7 +37,7 @@ const Header = () => {
           <p className="text-gray-400">{getGreeting()} <span className="font-semibold">{user.name}</span></p>
           <button
             onClick={handleLogout}
-            className="border px-3 py-1 rounded hover:bg-[#303643] transition"
+            className="border px-3 py-1 rounded hover:bg-[#303643] transition cursor-pointer"
           >
             Logout
           </button>
